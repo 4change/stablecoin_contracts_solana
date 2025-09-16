@@ -8,7 +8,6 @@ pub mod user_mng {
     pub fn initialize(ctx: Context<Initialize>, owner: Pubkey) -> Result<()> {
         let cfg = &mut ctx.accounts.config;
         cfg.owner = owner;
-        // cfg.bump = *ctx.bumps.get("config").unwrap();
         Ok(())
     }
 
@@ -71,7 +70,7 @@ pub mod user_mng {
     }
 
     pub fn remove_user(ctx: Context<RemoveUser>) -> Result<()> {
-        // account closed by `close = payer` in context
+        // closed to payer automatically by anchor via `close = payer`
         Ok(())
     }
 
@@ -116,7 +115,7 @@ pub mod user_mng {
 #[account]
 pub struct Config {
     pub owner: Pubkey,
-    pub bump: u8,
+    // remove bump from stored state; Anchor will validate PDA via `bump` constraint
 }
 
 #[account]
@@ -137,7 +136,7 @@ pub struct UserAccount {
 
 #[derive(Accounts)]
 pub struct Initialize<'info> {
-    #[account(init, payer = payer, space = 8 + 32 + 1, seeds = [b"config"], bump)]
+    #[account(init, payer = payer, space = 8 + 32, seeds = [b"config"], bump)]
     pub config: Account<'info, Config>,
     #[account(mut)]
     pub payer: Signer<'info>,
@@ -166,7 +165,8 @@ pub struct UpdateUser<'info> {
 
 #[derive(Accounts)]
 pub struct AdminOp<'info> {
-    #[account(mut, seeds = [b"config"], bump = config.bump)]
+    // validate PDA seeds using instruction bump (don't rely on stored bump)
+    #[account(mut, seeds = [b"config"], bump)]
     pub config: Account<'info, Config>,
     pub authority: Signer<'info>,
     #[account(mut, seeds = [b"user", user_key.key().as_ref()], bump)]
@@ -177,7 +177,7 @@ pub struct AdminOp<'info> {
 
 #[derive(Accounts)]
 pub struct TraderOp<'info> {
-    #[account(mut, seeds = [b"config"], bump = config.bump)]
+    #[account(mut, seeds = [b"config"], bump)]
     pub config: Account<'info, Config>,
     pub trader: Signer<'info>,
     #[account(mut, seeds = [b"user", user_key.key().as_ref()], bump)]

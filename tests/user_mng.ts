@@ -23,13 +23,18 @@ describe("user_mng program", () => {
         );
         configPda = cfgPda;
 
-        await program.rpc.initialize(provider.wallet.publicKey, {
-            accounts: {
-                config: configPda,
-                payer: provider.wallet.publicKey,
-                systemProgram: SystemProgram.programId,
-            },
-        });
+        // only initialize if config PDA does not exist yet
+        let configExists = true;
+        try {
+            await program.account.config.fetch(configPda);
+        } catch (err) {
+            configExists = false;
+        }
+        if (!configExists) {
+            await program.rpc.initialize(provider.wallet.publicKey, {
+                accounts: { config: configPda, payer: provider.wallet.publicKey, systemProgram: SystemProgram.programId },
+            });
+        }
 
         // derive user PDA for test user
         const [pda] = PublicKey.findProgramAddressSync(
