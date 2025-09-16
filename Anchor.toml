@@ -7,6 +7,7 @@ skip-lint = false
 
 [programs.localnet]
 stablecoin_contracts_solana = "FgPRhRgodU33QJRHoNmnBj1dhMNdYcoGEWaEVhCrzEBb"
+user_mng = "ChUH8uuPprPLGAvQUzZMCX7u9CnxJ3VVQrcDbtVuSQdR"
 
 [registry]
 url = "https://api.apr.dev"
