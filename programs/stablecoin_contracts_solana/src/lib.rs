@@ -9,11 +9,14 @@ pub mod stablecoin_contracts_solana {
     use super::*;
 
     pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
+        msg!("Greetings from==========================: {:?}", ctx.accounts);
         msg!("Greetings from==========================: {:?}", ctx.program_id);
+        msg!("Greetings from==========================: {:?}", ctx.bumps);
+        msg!("Greetings from==========================: {:?}", ctx.remaining_accounts);
         Ok(())
     }
 }
 
 // Accounts 宏：定义一个账户上下文结构体
-#[derive(Accounts)]
+#[derive(Accounts, Debug)]
 pub struct Initialize {}
