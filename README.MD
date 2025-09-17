@@ -2,6 +2,8 @@
 ```shell
 nvm use v22.19.0
 
+yarn                                    # 安装依赖
+
 anchor build
 
 anchor deploy
